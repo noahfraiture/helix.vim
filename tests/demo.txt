@@ -1,0 +1,5 @@
+outer([hello])
+let r = /abc/;
+one
+two
+three

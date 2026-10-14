@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-14",
+  "engine_tests": {
+    "status": "passed",
+    "count": 49
+  },
+  "simulated_host_tests": {
+    "status": "passed",
+    "count": 21
+  },
+  "real_neovim_tests": {
+    "status": "not_run",
+    "count": 25,
+    "reason": "Neovim executable unavailable; download permission requests were interrupted"
+  },
+  "ci": "not_run",
+  "production_ready": false
+}

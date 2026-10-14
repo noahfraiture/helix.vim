@@ -1,0 +1,27 @@
+*helix.txt*                   Selection-first editing in Neovim
+
+helix.nvim requires Neovim 0.11+. Enable explicitly from init.lua:
+>
+  require('helix').setup({ auto_enable = false })
+<
+:HelixEnable                    *:HelixEnable*
+        Start the selection engine in the current editable ordinary buffer.
+:HelixDisable                   *:HelixDisable*
+        Flush pending edits, clear selections, and restore native Vim input.
+:HelixToggle                    *:HelixToggle*
+        Toggle the engine in the current buffer.
+:HelixSelect {pattern}           *:HelixSelect*
+        Select Vim-regex matches within the current selections.
+:HelixSplit {pattern}            *:HelixSplit*
+        Split the current selections on Vim-regex matches.
+
+mim: inside closest pair. ma/: around paired slashes. C: cursor below.
+i/a/c: insert/append/change at all selections. u/U: engine undo/redo.
+
+This is an experimental engine. Its normal/select/insert states run while
+Neovim's underlying mode is normal. Native insert completion, snippets, and
+InsertEnter do not run. Normal mappings are processed before the input hook.
+It does not implement the whole Helix command set. See README.md for scope and
+TESTING.md for actual verification status.
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
