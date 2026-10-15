@@ -12,11 +12,18 @@
     "status": "passed",
     "count": 27
   },
-  "ci": "pending",
+  "ci": "passed",
   "production_ready": false,
   "tested_neovim_versions": [
     "0.11.4",
     "0.12.6"
   ],
-  "vim_pack_smoke_test": "pending"
+  "vim_pack_smoke_test": {
+    "status": "passed",
+    "neovim": "0.12.6",
+    "source": "https://github.com/noahfraiture/helix.vim",
+    "revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
+  },
+  "ci_run": "https://github.com/noahfraiture/helix.vim/actions/runs/38800238454",
+  "verified_code_revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
 }

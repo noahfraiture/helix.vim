@@ -17,7 +17,10 @@
 * Add find motions, line insertion, literal surround addition, regex splitting,
   internal-register arity handling, and additional selection controls.
 * Expand to 49 engine and 21 simulated-host tests with randomized invariant and
-  batching checks. Add 25 real-editor tests and a Neovim CI matrix.
+  batching checks. Add 27 real-editor tests and a Neovim CI matrix.
 
-The real-editor suite and CI remain unrun in this executor. This is an
-experimental development build, not a verified production release.
+All 97 tests now pass on Neovim 0.11.4 and 0.12.6, both locally and in CI.
+Installation through vim.pack also passes on 0.12.6. Real-editor testing fixed
+Neovim normal-mapping expansion during insertion and anchored regex offsets.
+This remains an experimental development build with the scope documented in
+README.md and doc/usage.md.

@@ -9,7 +9,7 @@ Date: 2026-10-15. Tested locally with Neovim 0.11.4 and 0.12.6 (LuaJIT).
 | Real Neovim integration | 27 tests passed |
 | Random engine editing | 6,000 command steps, valid ranges and UTF-8 |
 | Random adapter batching | 2,000 command steps, output agrees with engine |
-| `vim.pack` installation | Separate smoke test configured on stable in CI |
+| `vim.pack` installation | Passed locally and in CI on 0.12.6 |
 
 Run all 97 tests from the repository root with `make test`. To select a specific
 Neovim executable: `make test NVIM=/path/to/nvim`. The engine requires 0.11+;
@@ -25,7 +25,8 @@ logic separately and is not presented as real-editor validation.
 CI runs the three suites independently on 0.11.4 and stable. Stable also installs
 the current repository revision through `vim.pack` with isolated data/config
 folders and performs a textobject edit using the installed plugin. Results:
-https://github.com/noahfraiture/helix.vim/actions
+[Passing run](https://github.com/noahfraiture/helix.vim/actions/runs/38800238454),
+verified code revision `93c53063a7891c6197963ae13ce4173693ddcb43`.
 
 Helix surround behavior was checked against its upstream implementation:
 [helix-core/src/surround.rs](https://github.com/helix-editor/helix/blob/master/helix-core/src/surround.rs).

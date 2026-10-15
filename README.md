@@ -28,7 +28,8 @@ cd helix.vim
 nvim -i NONE -u tests/pack_init.lua tests/demo.txt
 ```
 
-That test config installs/loads the plugin with `vim.pack` and enables it.
+Confirm installation if prompted. This config loads the plugin with `vim.pack`
+and enables it.
 Try these sequences in the demo file (Escape means press the Escape key):
 
 | Keys | Expected result |
@@ -61,11 +62,12 @@ the default when `LUA` is omitted).
 
 **Verification status:** all 97 tests (49 engine, 21 simulated-host, and 27
 real-editor tests) pass on Neovim 0.11.4 and 0.12.6. CI also checks installation
-with `vim.pack` on stable. See [TESTING.md](TESTING.md).
+with `vim.pack` on stable. [CI is passing](https://github.com/noahfraiture/helix.vim/actions/runs/38800238454).
+See [TESTING.md](TESTING.md).
 
 This is not yet a complete Helix implementation. Neovim's underlying mode remains
-normal, so native insert-mode completion and snippets do not run. Mapping prefixes may delay
-input, and expression mappings can run before the input hook. See
+normal, so native insert-mode completion and snippets do not run. Mapping
+prefixes may delay input, and expression mappings can run before the input hook. See
 [detailed usage and limitations](doc/usage.md).
 
 MIT license.
