@@ -1,4 +1,4 @@
-# helix.nvim
+# helix.vim
 
 A selection-first Helix editing engine for Neovim **0.11+**. It owns persistent
 selections, multiple cursors, normal/select/insert state, textobjects, and edit

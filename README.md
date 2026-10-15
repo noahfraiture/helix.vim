@@ -1,4 +1,4 @@
-# helix.nvim
+# helix.vim
 
 An experimental Helix editing engine for Neovim: persistent selections,
 `mim` / `ma/` textobjects, and multiple cursors. It owns its editing state and
@@ -10,7 +10,7 @@ Requires **Neovim 0.12+** for `vim.pack`, and Git. Add to `init.lua`:
 
 ```lua
 vim.pack.add({
-  { src = 'https://github.com/noahfraiture/helix.nvim', version = 'main' },
+  { src = 'https://github.com/noahfraiture/helix.vim', version = 'main' },
 })
 
 require('helix').setup({ auto_enable = false })
@@ -23,8 +23,8 @@ to enable the engine automatically in ordinary editable buffers.
 ## Try it without changing your config
 
 ```sh
-git clone https://github.com/noahfraiture/helix.nvim.git
-cd helix.nvim
+git clone https://github.com/noahfraiture/helix.vim.git
+cd helix.vim
 nvim -i NONE -u tests/pack_init.lua tests/demo.txt
 ```
 
