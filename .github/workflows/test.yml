@@ -19,4 +19,19 @@ jobs:
           neovim: true
           version: ${{ matrix.version }}
       - run: nvim --version
-      - run: make test-nvim
+      - name: Selection engine
+        run: nvim --headless -u NONE -l tests/engine_spec.lua
+      - name: Simulated host
+        if: ${{ !cancelled() }}
+        run: nvim --headless -u NONE -l tests/host_runner.lua
+      - name: Real Neovim input
+        if: ${{ !cancelled() }}
+        run: nvim --headless -u NONE -l tests/nvim_spec.lua
+      - name: Install with vim.pack
+        if: ${{ !cancelled() && matrix.version == 'stable' }}
+        env:
+          XDG_CONFIG_HOME: ${{ runner.temp }}/helix-pack/config
+          XDG_DATA_HOME: ${{ runner.temp }}/helix-pack/data
+          XDG_STATE_HOME: ${{ runner.temp }}/helix-pack/state
+          XDG_CACHE_HOME: ${{ runner.temp }}/helix-pack/cache
+        run: nvim --headless -i NONE -u NONE -l tests/pack_spec.lua
