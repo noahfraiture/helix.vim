@@ -59,14 +59,13 @@ engine suite, simulated-host suite, and real Neovim integration suite. Without
 Neovim, `make test-local LUA=lua` runs the first two with Lua 5.1+ (`texlua` is
 the default when `LUA` is omitted).
 
-**Verification status:** 49 engine tests and 21 simulated-host tests pass locally.
-The 25 real Neovim tests have not run in the development executor. CI is configured
-to run the suites on Neovim 0.11.4 and stable; `vim.pack` needs 0.12+ separately.
-See [TESTING.md](TESTING.md) for the verification record.
+**Verification status:** all 97 tests (49 engine, 21 simulated-host, and 27
+real-editor tests) pass on Neovim 0.11.4 and 0.12.6. CI also checks installation
+with `vim.pack` on stable. See [TESTING.md](TESTING.md).
 
 This is not yet a complete Helix implementation. Neovim's underlying mode remains
-normal, so native insert-mode completion and snippets do not run. Existing normal
-mappings can affect input before the plugin receives it. See
+normal, so native insert-mode completion and snippets do not run. Mapping prefixes may delay
+input, and expression mappings can run before the input hook. See
 [detailed usage and limitations](doc/usage.md).
 
 MIT license.

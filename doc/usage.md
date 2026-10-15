@@ -5,12 +5,11 @@ selections, multiple cursors, normal/select/insert state, textobjects, and edit
 transactions. Input is intercepted with `vim.on_key`; edits use the buffer API;
 selections and cursors use extmarks. No editing keymaps or Vim operator replay.
 
-**Release status: experimental.** 49 engine tests and 21 simulated-host tests pass
-locally, including 8,000 deterministic random editing steps. The 25 real-Neovim
-integration tests are written but have **not run here**: this environment has no
-Neovim executable, and the network permission requests for its download were
-interrupted. The included CI workflow has not been executed. These results do not
-establish production readiness or full Helix parity.
+**Release status: experimental.** All 97 tests pass on Neovim 0.11.4 and
+0.12.6: 49 selection-engine tests, 21 simulated-host tests, and 27 real-editor
+integration tests. This includes 8,000 deterministic random command steps.
+The CI workflow additionally checks `vim.pack` installation on stable.
+These results do not establish full Helix parity.
 
 ## Try it in isolation
 
@@ -112,10 +111,13 @@ Vim dot-repeat, and insert mappings do not run during plugin insertion. This is
 not a full Helix implementation. Unsupported editing keys are consumed; they do
 not fall through to native Vim operators.
 
-`vim.on_key` runs **after** normal mappings. Existing mappings can therefore delay
-or transform input before it reaches this engine. Evaluate the isolated command
+`vim.on_key` runs **after** normal mappings. The engine routes original typed
+input and discards generated mapping keys, including Neovim's default `Y`
+expansion. Mapping prefixes can still delay input, and expression mappings may
+run side effects before the hook. Evaluate the isolated command
 above first. Native `:` commands, Ctrl-W window commands, and Ctrl-L redraw remain
-available. Input is parsed synchronously; buffer writes are deferred until
+available. Untyped programmatic normal input is discarded; disable the engine
+when a script needs to execute native normal-mode commands. Input is parsed synchronously; buffer writes are deferred until
 Neovim releases textlock, with flushes before command-line entry, writes, and
 buffer changes.
 
@@ -154,8 +156,8 @@ Unicode diffs, stale edits, native write barriers, paste, and lifecycle.
 `tests/nvim_spec.lua` exercises Neovim's real input listener, buffers, extmarks,
 command line, paste, window switching, and enable/disable behavior.
 
-`.github/workflows/test.yml` runs the real suites on Neovim 0.11.4 and stable once
-this project is placed in a GitHub repository with Actions enabled. See
+`.github/workflows/test.yml` runs the real suites on Neovim 0.11.4 and stable on pushes
+and pull requests. See
 [TESTING.md](../TESTING.md) for the current verification record.
 
 ## Lua API

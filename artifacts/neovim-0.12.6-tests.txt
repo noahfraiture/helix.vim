@@ -1,0 +1,103 @@
+/tmp/helix-test-nvim-stable/nvim-linux-x86_64/bin/nvim --headless -i NONE -u NONE -l tests/engine_spec.lua
+ok 1 - mim selects closest nested pair
+ok 2 - count selects outer pair
+ok 3 - ma/ includes slash delimiters
+ok 4 - ma/ selects nearest slashes within a path rather than alternating global pairs
+ok 5 - counted symmetric object searches outward on both sides
+ok 6 - escaped delimiters and closing delimiter
+ok 7 - even number of backslashes does not escape closing delimiter
+ok 8 - empty inside object changes without deleting delimiters
+ok 9 - missing text object preserves selections
+ok 10 - closing bracket key identifies opening pair
+ok 11 - Unicode literal delimiter
+ok 12 - multiple selections must fit inside the chosen surround
+ok 13 - word and around-word whitespace
+ok 14 - around last word uses preceding whitespace
+ok 15 - paragraph object stops at blank line
+ok 16 - adding cursors follows the primary and does not double count
+ok 17 - multiple cursors insert and undo a whole session
+ok 18 - multicursor textobjects change independent ranges
+ok 19 - multiline insertion and Unicode backspace
+ok 20 - delete yank paste distributes per-selection entries
+ok 21 - paste undo restores original ranges
+ok 22 - mismatched paste arity joins register entries with newlines
+ok 23 - overlaps merge but adjacent ranges stay separate
+ok 24 - backward and forward selection extension
+ok 25 - Unicode motions and replacement preserve codepoints
+ok 26 - regex selection creates editable selections
+ok 27 - zero-width matcher terminates at EOF
+ok 28 - regex split and split on newlines
+ok 29 - escape cancels count and textobject prefix
+ok 30 - empty buffer and EOF are editable
+ok 31 - line selection extends across three lines
+ok 32 - insert punctuation and literal less-than
+ok 33 - vertical motion stops at final line
+ok 34 - vertical motion remembers preferred column across short lines
+ok 35 - no-op insert does not steal undo or clear redo
+ok 36 - backspace at BOF is a no-op
+ok 37 - history is bounded
+ok 38 - f and t cross line boundaries
+ok 39 - backward find preserves backward selection
+ok 40 - surround is a transaction on every selection
+ok 41 - line insert and append
+ok 42 - open line above and below
+ok 43 - case conversion
+ok 44 - keep and remove primary selections
+ok 45 - large counts remain bounded and cancellable
+ok 46 - Unicode vertical motion preserves character columns rather than byte columns
+ok 47 - insert Home and End include the position after the last character
+ok 48 - cursor copied onto a wide character still selects that character
+ok 49 - deterministic random editing preserves all range invariants
+49 engine tests passed
+/tmp/helix-test-nvim-stable/nvim-linux-x86_64/bin/nvim --headless -i NONE -u NONE -l tests/host_runner.lua
+ok 1 - rapid insert handles colon and punctuation without command leakage
+ok 2 - mim works through the input listener and commits outside textlock
+ok 3 - ma/ deletes a slash textobject
+ok 4 - ma/ finds path segments between adjacent slashes
+ok 5 - colon can itself be a surround object
+ok 6 - multicursor edits, selection rendering and undo
+ok 7 - pending text is flushed before a native write command
+ok 8 - pending edits are committed on disable
+ok 9 - external edits form a safe history boundary
+ok 10 - external edits cannot be overwritten by an old scheduled commit
+ok 11 - Neovim paste distributes multiline Unicode input to every cursor
+ok 12 - streamed paste and ordinary pending typing retain their order
+ok 13 - Unicode diff boundaries do not split a shared character prefix
+ok 14 - regex match offsets are relative to the original selection
+ok 15 - invalid regex leaves selections intact
+ok 16 - readonly buffers bypass the editing engine
+ok 17 - buffer switching preserves per-buffer state
+ok 18 - explicit disable survives auto-enable buffer reentry
+ok 19 - teardown restores the paste handler and removes commands
+ok 20 - get_state returns independent selection tables
+ok 21 - batched random input matches the engine without corrupting buffer bytes
+21 simulated-host adapter tests passed (not real Neovim)
+/tmp/helix-test-nvim-stable/nvim-linux-x86_64/bin/nvim --headless -i NONE -u NONE -l tests/nvim_spec.lua
+ok 1 - mim selects closest pair using actual Neovim input
+ok 2 - ma/ selects and deletes a slash object
+ok 3 - ma/ finds the closest slash delimiters in paths
+ok 4 - rapid insert punctuation cannot enter native command mode
+ok 5 - colon as a textobject is not a command prefix
+ok 6 - mapped normal keys retain their original text in engine insertion
+ok 7 - multi-key mappings deliver each originally typed character exactly once
+ok 8 - multicursor insertion undo and redo
+ok 9 - multicursor textobjects and changes
+ok 10 - extmarks render secondary selections and cursors
+ok 11 - regex matching and anchored split use original-string offsets
+ok 12 - selection regex prompt invokes the UI callback
+ok 13 - multiline Unicode paste distributes to all insertion points
+ok 14 - streaming paste stays in one engine undo session
+ok 15 - Unicode replacements preserve shared-byte prefixes
+ok 16 - insert End and Home are insertion boundaries
+ok 17 - control-H backspaces at all cursors:write! /tmp/nvim.agent/UDeQCP/0
+"/tmp/nvim.agent/UDeQCP/0" 
+"/tmp/nvim.agent/UDeQCP/0" [New] 1L, 5B written
+ok 18 - native command-line write flushes all pending engine edits
+ok 19 - external edits reset engine undo rather than overwriting external textok 20 - disable returns native Vim input and clears decorations
+ok 21 - enable and teardown do not add any editing keymaps
+ok 22 - read-only and special buffers are excluded
+ok 23 - counted textobjects and escaped slash delimiterok 24 - native window switching preserves distinct buffer states
+ok 25 - new lines can be inserted above and below all cursors
+ok 26 - no-op insert leaves the redo branch intact
+ok 27 - external cursor movement resynchronizes the selection
+27 real Neovim integration tests passed

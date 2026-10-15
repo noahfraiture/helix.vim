@@ -20,13 +20,13 @@ jobs:
           version: ${{ matrix.version }}
       - run: nvim --version
       - name: Selection engine
-        run: nvim --headless -u NONE -l tests/engine_spec.lua
+        run: nvim --headless -i NONE -u NONE -l tests/engine_spec.lua
       - name: Simulated host
         if: ${{ !cancelled() }}
-        run: nvim --headless -u NONE -l tests/host_runner.lua
+        run: nvim --headless -i NONE -u NONE -l tests/host_runner.lua
       - name: Real Neovim input
         if: ${{ !cancelled() }}
-        run: nvim --headless -u NONE -l tests/nvim_spec.lua
+        run: nvim --headless -i NONE -u NONE -l tests/nvim_spec.lua
       - name: Install with vim.pack
         if: ${{ !cancelled() && matrix.version == 'stable' }}
         env:

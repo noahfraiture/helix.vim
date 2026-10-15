@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-14",
+  "date": "2026-10-15",
   "engine_tests": {
     "status": "passed",
     "count": 49
@@ -9,10 +9,14 @@
     "count": 21
   },
   "real_neovim_tests": {
-    "status": "not_run",
-    "count": 25,
-    "reason": "Neovim executable unavailable; download permission requests were interrupted"
+    "status": "passed",
+    "count": 27
   },
-  "ci": "not_run",
-  "production_ready": false
+  "ci": "pending",
+  "production_ready": false,
+  "tested_neovim_versions": [
+    "0.11.4",
+    "0.12.6"
+  ],
+  "vim_pack_smoke_test": "pending"
 }

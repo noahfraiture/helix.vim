@@ -153,7 +153,9 @@ function M.select_regex(pattern, buf, split)
   record = synchronize(buf, record)
   record.engine:matches(function(value, offset)
     -- Keep the whole string: slicing would make ^ match again at every offset.
-    local result = vim.fn.matchstrpos(value, pattern, offset)
+    -- The count argument makes start an offset into the original string;
+    -- without it Vim treats start as a sliced-string beginning for ^ anchors.
+    local result = vim.fn.matchstrpos(value, pattern, offset, 1)
     if result[2] >= 0 then return result[2], result[3] end
   end, split)
   flush(buf)
@@ -196,6 +198,19 @@ local function key_name(key)
   if name == '<lt>' then return '<' elseif name == '<Space>' then return ' ' end
   return name
 end
+local function typed_keys(typed)
+  local translated, out, offset = vim.fn.keytrans(typed), {}, 0
+  while offset < #translated do
+    local finish
+    if translated:sub(offset + 1, offset + 1) == '<' then finish = translated:find('>', offset + 2, true) end
+    finish = finish or core.next(translated, offset)
+    local name = translated:sub(offset + 1, finish)
+    name = name:gsub('^<C%-(%u)>$', function(c) return '<C-' .. c:lower() .. '>' end)
+    if name == '<lt>' then name = '<' elseif name == '<Space>' then name = ' ' end
+    out[#out + 1], offset = name, finish
+  end
+  return out
+end
 function M.setup(opts)
   options = vim.tbl_extend('force', options, opts or {})
   assert(type(options.history_limit) == 'number' and options.history_limit >= 1
@@ -206,7 +221,7 @@ function M.setup(opts)
     for name, target in pairs({HelixSelection = 'Visual', HelixCursor = 'Cursor', HelixPrimaryCursor = 'IncSearch'}) do
       api.nvim_set_hl(0, name, {default = true, link = target})
     end
-    vim.on_key(function(key)
+    vim.on_key(function(key, typed)
       local buf = api.nvim_get_current_buf()
       if not records[buf] or not eligible(buf) or vim.fn.mode(1) ~= 'n' then return end
       local name = key_name(key)
@@ -216,15 +231,23 @@ function M.setup(opts)
         if native_window == 'prefix' and name == 'g' then native_window = 'g'; return end
         native_window = nil; return
       end
-      local engine = records[buf].engine
-      if engine.mode ~= 'insert' and engine.pending == '' then
-        if name == ':' then engine.count = ''; return end
-        if name == '<C-w>' then engine.count = ''; native_window = 'prefix'; return end
-        if name == '<C-l>' then return end
+      -- Mappings have already expanded. The first generated key carries the
+      -- original typed input; the rest have typed == ''. Route that original
+      -- input once so Neovim's default Y -> y$ cannot leak into engine insertion.
+      if typed == '' then return '' end
+      local inputs = typed_keys(typed or key)
+      if #inputs == 1 then
+        name = inputs[1]
+        local engine = records[buf].engine
+        if engine.mode ~= 'insert' and engine.pending == '' then
+          if name == ':' then engine.count = ''; return end
+          if name == '<C-w>' then engine.count = ''; native_window = 'prefix'; return end
+          if name == '<C-l>' then return end
+        end
       end
       -- Only pure Lua state changes happen under on_key's textlock. Unlike a
       -- deferred parser, this handles fast sequences and literal ':' correctly.
-      consume(buf, name)
+      for _, input in ipairs(inputs) do consume(buf, input) end
       return ''
     end, ns)
     original_paste = vim.paste

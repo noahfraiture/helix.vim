@@ -13,6 +13,6 @@ test-host:
 	$(LUA) tests/host_spec.lua
 
 test-nvim:
-	$(NVIM) --headless -u NONE -l tests/engine_spec.lua
-	$(NVIM) --headless -u NONE -l tests/host_runner.lua
-	$(NVIM) --headless -u NONE -l tests/nvim_spec.lua
+	$(NVIM) --headless -i NONE -u NONE -l tests/engine_spec.lua
+	$(NVIM) --headless -i NONE -u NONE -l tests/host_runner.lua
+	$(NVIM) --headless -i NONE -u NONE -l tests/nvim_spec.lua
