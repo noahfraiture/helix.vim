@@ -25,7 +25,8 @@ logic separately and is not presented as real-editor validation.
 CI runs the three suites independently on 0.11.4 and stable. Stable also installs
 the current repository revision through `vim.pack` with isolated data/config
 folders and performs a textobject edit using the installed plugin. Results:
-[Workflow results](https://github.com/noahfraiture/helix.vim/actions).
+[Passing run](https://github.com/noahfraiture/helix.vim/actions/runs/38811009644),
+verified code revision `8fb5564f1a3851fb8dc9eed5f203842789742901`.
 
 Helix surround behavior was checked against its upstream implementation:
 [helix-core/src/surround.rs](https://github.com/helix-editor/helix/blob/master/helix-core/src/surround.rs).

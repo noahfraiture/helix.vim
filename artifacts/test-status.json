@@ -12,7 +12,7 @@
     "status": "passed",
     "count": 38
   },
-  "ci": "pending_for_word_and_cursor_fixes",
+  "ci": "passed",
   "production_ready": false,
   "tested_neovim_versions": [
     "0.11.4",
@@ -22,8 +22,10 @@
     "status": "passed",
     "neovim": "0.12.6",
     "source": "https://github.com/noahfraiture/helix.vim",
-    "revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
+    "revision": "8fb5564f1a3851fb8dc9eed5f203842789742901"
   },
   "previous_ci_run": "https://github.com/noahfraiture/helix.vim/actions/runs/38800238454",
-  "previous_verified_code_revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
+  "previous_verified_code_revision": "93c53063a7891c6197963ae13ce4173693ddcb43",
+  "ci_run": "https://github.com/noahfraiture/helix.vim/actions/runs/38811009644",
+  "verified_code_revision": "8fb5564f1a3851fb8dc9eed5f203842789742901"
 }

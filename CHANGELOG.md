@@ -19,7 +19,7 @@
 * Expand to 54 engine and 21 simulated-host tests with randomized invariant and
   batching checks. Add 38 real-editor tests and a Neovim CI matrix.
 
-All 113 tests pass locally on Neovim 0.11.4 and 0.12.6. CI runs the same suites.
+All 113 tests pass locally and in CI on Neovim 0.11.4 and 0.12.6.
 Installation through vim.pack also passes on 0.12.6. Real-editor testing fixed
 Neovim normal-mapping expansion during insertion and anchored regex offsets.
 This remains an experimental development build with the scope documented in
