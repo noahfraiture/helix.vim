@@ -12,43 +12,48 @@ ok 10 - closing bracket key identifies opening pair
 ok 11 - Unicode literal delimiter
 ok 12 - multiple selections must fit inside the chosen surround
 ok 13 - word and around-word whitespace
-ok 14 - around last word uses preceding whitespace
-ok 15 - paragraph object stops at blank line
-ok 16 - adding cursors follows the primary and does not double count
-ok 17 - multiple cursors insert and undo a whole session
-ok 18 - multicursor textobjects change independent ranges
-ok 19 - multiline insertion and Unicode backspace
-ok 20 - delete yank paste distributes per-selection entries
-ok 21 - paste undo restores original ranges
-ok 22 - mismatched paste arity joins register entries with newlines
-ok 23 - overlaps merge but adjacent ranges stay separate
-ok 24 - backward and forward selection extension
-ok 25 - Unicode motions and replacement preserve codepoints
-ok 26 - regex selection creates editable selections
-ok 27 - zero-width matcher terminates at EOF
-ok 28 - regex split and split on newlines
-ok 29 - escape cancels count and textobject prefix
-ok 30 - empty buffer and EOF are editable
-ok 31 - line selection extends across three lines
-ok 32 - insert punctuation and literal less-than
-ok 33 - vertical motion stops at final line
-ok 34 - vertical motion remembers preferred column across short lines
-ok 35 - no-op insert does not steal undo or clear redo
-ok 36 - backspace at BOF is a no-op
-ok 37 - history is bounded
-ok 38 - f and t cross line boundaries
-ok 39 - backward find preserves backward selection
-ok 40 - surround is a transaction on every selection
-ok 41 - line insert and append
-ok 42 - open line above and below
-ok 43 - case conversion
-ok 44 - keep and remove primary selections
-ok 45 - large counts remain bounded and cancellable
-ok 46 - Unicode vertical motion preserves character columns rather than byte columns
-ok 47 - insert Home and End include the position after the last character
-ok 48 - cursor copied onto a wide character still selects that character
-ok 49 - deterministic random editing preserves all range invariants
-49 engine tests passed
+ok 14 - repeated w selects consecutive words without sticking on spaces
+ok 15 - word-start movement handles tabs, punctuation, and newlines
+ok 16 - repeated W treats punctuation as part of a WORD
+ok 17 - counted word movement agrees with repeated movement
+ok 18 - word extension keeps its anchor while advancing across words
+ok 19 - around last word uses preceding whitespace
+ok 20 - paragraph object stops at blank line
+ok 21 - adding cursors follows the primary and does not double count
+ok 22 - multiple cursors insert and undo a whole session
+ok 23 - multicursor textobjects change independent ranges
+ok 24 - multiline insertion and Unicode backspace
+ok 25 - delete yank paste distributes per-selection entries
+ok 26 - paste undo restores original ranges
+ok 27 - mismatched paste arity joins register entries with newlines
+ok 28 - overlaps merge but adjacent ranges stay separate
+ok 29 - backward and forward selection extension
+ok 30 - Unicode motions and replacement preserve codepoints
+ok 31 - regex selection creates editable selections
+ok 32 - zero-width matcher terminates at EOF
+ok 33 - regex split and split on newlines
+ok 34 - escape cancels count and textobject prefix
+ok 35 - empty buffer and EOF are editable
+ok 36 - line selection extends across three lines
+ok 37 - insert punctuation and literal less-than
+ok 38 - vertical motion stops at final line
+ok 39 - vertical motion remembers preferred column across short lines
+ok 40 - no-op insert does not steal undo or clear redo
+ok 41 - backspace at BOF is a no-op
+ok 42 - history is bounded
+ok 43 - f and t cross line boundaries
+ok 44 - backward find preserves backward selection
+ok 45 - surround is a transaction on every selection
+ok 46 - line insert and append
+ok 47 - open line above and below
+ok 48 - case conversion
+ok 49 - keep and remove primary selections
+ok 50 - large counts remain bounded and cancellable
+ok 51 - Unicode vertical motion preserves character columns rather than byte columns
+ok 52 - insert Home and End include the position after the last character
+ok 53 - cursor copied onto a wide character still selects that character
+ok 54 - deterministic random editing preserves all range invariants
+54 engine tests passed
 /tmp/helix-test-nvim-stable/nvim-linux-x86_64/bin/nvim --headless -i NONE -u NONE -l tests/host_runner.lua
 ok 1 - rapid insert handles colon and punctuation without command leakage
 ok 2 - mim works through the input listener and commits outside textlock
@@ -83,21 +88,32 @@ ok 7 - multi-key mappings deliver each originally typed character exactly once
 ok 8 - multicursor insertion undo and redo
 ok 9 - multicursor textobjects and changes
 ok 10 - extmarks render secondary selections and cursors
-ok 11 - regex matching and anchored split use original-string offsets
-ok 12 - selection regex prompt invokes the UI callback
-ok 13 - multiline Unicode paste distributes to all insertion points
-ok 14 - streaming paste stays in one engine undo session
-ok 15 - Unicode replacements preserve shared-byte prefixes
-ok 16 - insert End and Home are insertion boundaries
-ok 17 - control-H backspaces at all cursors:write! /tmp/nvim.agent/UDeQCP/0
-"/tmp/nvim.agent/UDeQCP/0" 
-"/tmp/nvim.agent/UDeQCP/0" [New] 1L, 5B written
-ok 18 - native command-line write flushes all pending engine edits
-ok 19 - external edits reset engine undo rather than overwriting external textok 20 - disable returns native Vim input and clears decorations
-ok 21 - enable and teardown do not add any editing keymaps
-ok 22 - read-only and special buffers are excluded
-ok 23 - counted textobjects and escaped slash delimiterok 24 - native window switching preserves distinct buffer states
-ok 25 - new lines can be inserted above and below all cursors
-ok 26 - no-op insert leaves the redo branch intact
-ok 27 - external cursor movement resynchronizes the selection
-27 real Neovim integration tests passed
+ok 11 - repeated word keys advance through a sentence using actual input
+ok 12 - insert cursor reaches the actual insertion point at line end
+ok 13 - primary insertion cursor does not highlight the next character as a selection
+ok 14 - end-of-line insertion respects Unicode byte positions and the user cursor shape
+ok 15 - virtualedit restores the inherited global setting after disable
+ok 16 - pre-existing all virtualedit is preserved
+ok 17 - a user option change while enabled is not overwritten on disable
+ok 18 - virtualedit is restored when switching to a disabled buffer
+ok 19 - split windows do not retain inherited temporary cursor options after disable
+ok 20 - temporary cursor options do not leak into inactive floating windows
+ok 21 - teardown restores the original window cursor options
+ok 22 - regex matching and anchored split use original-string offsets
+ok 23 - selection regex prompt invokes the UI callback
+ok 24 - multiline Unicode paste distributes to all insertion points
+ok 25 - streaming paste stays in one engine undo session
+ok 26 - Unicode replacements preserve shared-byte prefixes
+ok 27 - insert End and Home are insertion boundaries
+ok 28 - control-H backspaces at all cursors:write! /tmp/nvim.agent/kSxWoY/0
+"/tmp/nvim.agent/kSxWoY/0"
+"/tmp/nvim.agent/kSxWoY/0" [New] 1L, 5B written
+ok 29 - native command-line write flushes all pending engine edits
+ok 30 - external edits reset engine undo rather than overwriting external textok 31 - disable returns native Vim input and clears decorations
+ok 32 - enable and teardown do not add any editing keymaps
+ok 33 - read-only and special buffers are excluded
+ok 34 - counted textobjects and escaped slash delimiterok 35 - native window switching preserves distinct buffer states
+ok 36 - new lines can be inserted above and below all cursors
+ok 37 - no-op insert leaves the redo branch intact
+ok 38 - external cursor movement resynchronizes the selection
+38 real Neovim integration tests passed

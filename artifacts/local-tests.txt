@@ -12,43 +12,48 @@ ok 10 - closing bracket key identifies opening pair
 ok 11 - Unicode literal delimiter
 ok 12 - multiple selections must fit inside the chosen surround
 ok 13 - word and around-word whitespace
-ok 14 - around last word uses preceding whitespace
-ok 15 - paragraph object stops at blank line
-ok 16 - adding cursors follows the primary and does not double count
-ok 17 - multiple cursors insert and undo a whole session
-ok 18 - multicursor textobjects change independent ranges
-ok 19 - multiline insertion and Unicode backspace
-ok 20 - delete yank paste distributes per-selection entries
-ok 21 - paste undo restores original ranges
-ok 22 - mismatched paste arity joins register entries with newlines
-ok 23 - overlaps merge but adjacent ranges stay separate
-ok 24 - backward and forward selection extension
-ok 25 - Unicode motions and replacement preserve codepoints
-ok 26 - regex selection creates editable selections
-ok 27 - zero-width matcher terminates at EOF
-ok 28 - regex split and split on newlines
-ok 29 - escape cancels count and textobject prefix
-ok 30 - empty buffer and EOF are editable
-ok 31 - line selection extends across three lines
-ok 32 - insert punctuation and literal less-than
-ok 33 - vertical motion stops at final line
-ok 34 - vertical motion remembers preferred column across short lines
-ok 35 - no-op insert does not steal undo or clear redo
-ok 36 - backspace at BOF is a no-op
-ok 37 - history is bounded
-ok 38 - f and t cross line boundaries
-ok 39 - backward find preserves backward selection
-ok 40 - surround is a transaction on every selection
-ok 41 - line insert and append
-ok 42 - open line above and below
-ok 43 - case conversion
-ok 44 - keep and remove primary selections
-ok 45 - large counts remain bounded and cancellable
-ok 46 - Unicode vertical motion preserves character columns rather than byte columns
-ok 47 - insert Home and End include the position after the last character
-ok 48 - cursor copied onto a wide character still selects that character
-ok 49 - deterministic random editing preserves all range invariants
-49 engine tests passed
+ok 14 - repeated w selects consecutive words without sticking on spaces
+ok 15 - word-start movement handles tabs, punctuation, and newlines
+ok 16 - repeated W treats punctuation as part of a WORD
+ok 17 - counted word movement agrees with repeated movement
+ok 18 - word extension keeps its anchor while advancing across words
+ok 19 - around last word uses preceding whitespace
+ok 20 - paragraph object stops at blank line
+ok 21 - adding cursors follows the primary and does not double count
+ok 22 - multiple cursors insert and undo a whole session
+ok 23 - multicursor textobjects change independent ranges
+ok 24 - multiline insertion and Unicode backspace
+ok 25 - delete yank paste distributes per-selection entries
+ok 26 - paste undo restores original ranges
+ok 27 - mismatched paste arity joins register entries with newlines
+ok 28 - overlaps merge but adjacent ranges stay separate
+ok 29 - backward and forward selection extension
+ok 30 - Unicode motions and replacement preserve codepoints
+ok 31 - regex selection creates editable selections
+ok 32 - zero-width matcher terminates at EOF
+ok 33 - regex split and split on newlines
+ok 34 - escape cancels count and textobject prefix
+ok 35 - empty buffer and EOF are editable
+ok 36 - line selection extends across three lines
+ok 37 - insert punctuation and literal less-than
+ok 38 - vertical motion stops at final line
+ok 39 - vertical motion remembers preferred column across short lines
+ok 40 - no-op insert does not steal undo or clear redo
+ok 41 - backspace at BOF is a no-op
+ok 42 - history is bounded
+ok 43 - f and t cross line boundaries
+ok 44 - backward find preserves backward selection
+ok 45 - surround is a transaction on every selection
+ok 46 - line insert and append
+ok 47 - open line above and below
+ok 48 - case conversion
+ok 49 - keep and remove primary selections
+ok 50 - large counts remain bounded and cancellable
+ok 51 - Unicode vertical motion preserves character columns rather than byte columns
+ok 52 - insert Home and End include the position after the last character
+ok 53 - cursor copied onto a wide character still selects that character
+ok 54 - deterministic random editing preserves all range invariants
+54 engine tests passed
 texlua tests/host_spec.lua
 ok 1 - rapid insert handles colon and punctuation without command leakage
 ok 2 - mim works through the input listener and commits outside textlock

@@ -217,7 +217,47 @@ function Engine:offset_column(row, column)
   end
   return p
 end
+function Engine:move_word_start(key, count)
+  local text, long = self.text, key == 'W'
+  local function category(p)
+    if text:sub(p + 1, p + 1) == '\n' then return 3 end
+    return class(text, p, long)
+  end
+  for _, s in ipairs(self.selections) do
+    local endpoint = s.backward and s.start or s.finish
+    if endpoint < #text then
+      local cursor = self:head(s)
+      local anchor, head = cursor, M.next(text, cursor)
+      for _ = 1, count do
+        if head >= #text then break end
+        local previous = M.prev(text, head)
+        -- Newline boundaries start a new word selection on the following line.
+        while head < #text and category(head) == 3 do
+          previous, head = head, M.next(text, head)
+        end
+        if category(previous) == 3 then anchor = head end
+        local start = head
+        while head < #text do
+          local current = category(head)
+          local boundary = category(previous) ~= current and current ~= 0
+          if boundary then
+            if head == start then anchor = head else break end
+          end
+          previous, head = head, M.next(text, head)
+        end
+      end
+      if self.mode == 'select' then
+        local fixed = s.backward and M.prev(text, s.finish) or s.start
+        local target = head > anchor and M.prev(text, head) or head
+        s.start, s.finish, s.backward = math.min(fixed, target), M.next(text, math.max(fixed, target)), target < fixed or nil
+      else s.start, s.finish, s.backward = anchor, head, nil end
+      s.goal = nil
+    end
+  end
+  self:normalize()
+end
 function Engine:move(key, count)
+  if key == 'w' or key == 'W' then self:move_word_start(key, count or 1); return end
   local text = self.text
   for _, s in ipairs(self.selections) do
     local original, p = self:head(s), self:head(s)
@@ -233,10 +273,6 @@ function Engine:move(key, count)
           local target = self:offset_column(targetrow, goal)
           if M.position(text, target) == targetrow then p = target end
         end
-      elseif key == 'w' or key == 'W' then
-        local cls = class(text, p, key == 'W')
-        while p < #text and class(text, p, key == 'W') == cls do p = M.next(text, p) end
-        while p < #text and class(text, p, key == 'W') == 0 do p = M.next(text, p) end
       elseif key == 'b' or key == 'B' then
         p = M.prev(text, p)
         while p > 0 and class(text, p, key == 'B') == 0 do p = M.prev(text, p) end
@@ -257,8 +293,6 @@ function Engine:move(key, count)
     if extend or word then
       local anchor = extend and (s.backward and M.prev(text, s.finish) or s.start) or original
       local finish = M.next(text, math.max(anchor, p))
-      -- Helix's next-word-start range stops before the next word.
-      if not extend and (key == 'w' or key == 'W') and p > original then finish = p end
       s.start, s.finish, s.backward = math.min(anchor, p), finish, p < anchor or nil
     else s.start, s.finish, s.backward = p, M.next(text, p), nil end
     s.goal = (key == 'j' or key == 'k') and goal or nil

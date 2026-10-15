@@ -5,8 +5,8 @@ selections, multiple cursors, normal/select/insert state, textobjects, and edit
 transactions. Input is intercepted with `vim.on_key`; edits use the buffer API;
 selections and cursors use extmarks. No editing keymaps or Vim operator replay.
 
-**Release status: experimental.** All 97 tests pass on Neovim 0.11.4 and
-0.12.6: 49 selection-engine tests, 21 simulated-host tests, and 27 real-editor
+**Release status: experimental.** All 113 tests pass on Neovim 0.11.4 and
+0.12.6: 54 selection-engine tests, 21 simulated-host tests, and 38 real-editor
 integration tests. This includes 8,000 deterministic random command steps.
 The CI workflow additionally checks `vim.pack` installation on stable.
 These results do not establish full Helix parity.
@@ -88,6 +88,8 @@ Highlights are `HelixSelection`, `HelixCursor`, and `HelixPrimaryCursor`.
 | `(`, `)` | Rotate primary selection |
 
 Counts apply to movement, cursor copying, line selection, and surround selection.
+For word-start motions in normal state, `2w` selects the second word; in select
+state, `v2w` extends the anchored selection through that word.
 Yanks use an internal per-selection register. When register and selection counts
 match, paste distributes entries; otherwise, entries are joined with newlines.
 A whole insert session is one engine undo step. Entering insert and escaping
@@ -120,6 +122,16 @@ available. Untyped programmatic normal input is discarded; disable the engine
 when a script needs to execute native normal-mode commands. Input is parsed synchronously; buffer writes are deferred until
 Neovim releases textlock, with flushes before command-line entry, writes, and
 buffer changes.
+
+The primary insertion cursor is Neovim's own cursor and keeps your `guicursor`
+setting. Enabled windows temporarily add `onemore` to `virtualedit` if needed so
+an insertion point at the end of a line is not clamped onto the last character.
+The original local setting is restored on buffer/window leave, disable, and
+teardown; a setting changed explicitly while enabled is preserved. The global
+`virtualedit` value is not changed.
+
+A first-class core mode needs changes to Neovim itself. See the
+[native-mode proposal](native-mode.md) for a staged experiment.
 
 ## Current boundaries
 

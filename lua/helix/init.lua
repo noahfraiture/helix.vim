@@ -4,6 +4,7 @@ local ns = api.nvim_create_namespace('helix.nvim')
 local records, disabled = {}, {}
 local options = {auto_enable = true, history_limit = 200}
 local installed, original_paste, paste_hook, native_window
+local cursor_windows, inherited_cursor_option = {}, nil
 local flush, schedule_flush
 local function text(buf) return table.concat(api.nvim_buf_get_lines(buf, 0, -1, true), '\n') end
 local function eligible(buf)
@@ -31,6 +32,35 @@ local function synchronize(buf, record)
   end
   return record
 end
+local function restore_cursor_window(win)
+  local saved = cursor_windows[win]
+  if saved and api.nvim_win_is_valid(win) then
+    local current = api.nvim_get_option_value('virtualedit', {win = win, scope = 'local'})
+    if current == saved.applied then api.nvim_set_option_value('virtualedit', saved.previous, {win = win, scope = 'local'}) end
+  end
+  cursor_windows[win] = nil
+end
+local function restore_cursor_buffer(buf)
+  local windows = {}
+  for win, saved in pairs(cursor_windows) do if saved.buf == buf then windows[#windows + 1] = win end end
+  for _, win in ipairs(windows) do restore_cursor_window(win) end
+end
+local function prepare_cursor_window(buf)
+  local win = api.nvim_get_current_win()
+  local local_value = api.nvim_get_option_value('virtualedit', {win = win, scope = 'local'})
+  local saved = cursor_windows[win]
+  if saved and (saved.buf ~= buf or local_value ~= saved.applied) then
+    restore_cursor_window(win)
+    local_value = api.nvim_get_option_value('virtualedit', {win = win, scope = 'local'})
+  end
+  if cursor_windows[win] then return end
+  local effective = api.nvim_get_option_value('virtualedit', {win = win})
+  local flags = ',' .. effective .. ','
+  if flags:find(',all,', 1, true) or flags:find(',onemore,', 1, true) then return end
+  local applied = effective == '' and 'onemore' or effective .. ',onemore'
+  cursor_windows[win] = {buf = buf, previous = local_value, applied = applied}
+  api.nvim_set_option_value('virtualedit', applied, {win = win, scope = 'local'})
+end
 local function render(buf, record)
   if not api.nvim_buf_is_valid(buf) then return end
   local engine = record.engine
@@ -49,9 +79,14 @@ local function render(buf, record)
     local group = i == engine.primary and 'HelixPrimaryCursor' or 'HelixCursor'
     if crow == nrow and ncol > ccol then mark.end_row, mark.end_col, mark.hl_group = nrow, ncol, group
     else mark.virt_text, mark.virt_text_pos = {{' ', group}}, 'overlay' end
-    api.nvim_buf_set_extmark(buf, ns, crow, ccol, mark)
+    -- The primary insertion point is drawn by Neovim itself. A second full-cell
+    -- mark makes the next character look selected, especially with a bar cursor.
+    if engine.mode ~= 'insert' or i ~= engine.primary then api.nvim_buf_set_extmark(buf, ns, crow, ccol, mark) end
   end
   if api.nvim_get_current_buf() == buf then
+    -- Normal mode otherwise clamps an insertion point at EOL to the last
+    -- character, leaving a native cursor beside the plugin's virtual cursor.
+    prepare_cursor_window(buf)
     local s = engine.selections[engine.primary]
     local row, col = core.position(engine.text, engine.mode == 'insert' and s.start or engine:head(s))
     api.nvim_win_set_cursor(0, {row + 1, col})
@@ -81,6 +116,7 @@ flush = function(buf)
   local record = records[buf]
   if not record or record.applying then return true end
   if not eligible(buf) then
+    restore_cursor_buffer(buf)
     if api.nvim_buf_is_valid(buf) then
       records[buf] = new_record(buf, text(buf), record.engine.register)
       api.nvim_buf_clear_namespace(buf, ns, 0, -1)
@@ -173,6 +209,7 @@ end
 function M.disable(buf)
   buf = buf or api.nvim_get_current_buf()
   flush(buf)
+  restore_cursor_buffer(buf)
   records[buf], disabled[buf], native_window = nil, true, nil
   if api.nvim_buf_is_valid(buf) then
     api.nvim_buf_clear_namespace(buf, ns, 0, -1)
@@ -272,6 +309,31 @@ function M.setup(opts)
     api.nvim_create_autocmd({'BufLeave', 'BufWritePre', 'CmdlineEnter'}, {group = group, callback = function(event)
       local buf = event.buf ~= 0 and event.buf or api.nvim_get_current_buf()
       if records[buf] then local ok = flush(buf); if not ok then schedule_flush(buf) end end
+      if event.event == 'BufLeave' then restore_cursor_window(api.nvim_get_current_win()) end
+    end})
+    api.nvim_create_autocmd('WinLeave', {group = group, callback = function()
+      local win = api.nvim_get_current_win()
+      inherited_cursor_option = cursor_windows[win]
+      restore_cursor_window(win)
+    end})
+    api.nvim_create_autocmd('WinNew', {group = group, callback = function(event)
+      -- Splits copy local options before WinLeave runs. Remove that inherited
+      -- temporary value so the new window also restores the user's original.
+      local source = api.nvim_get_current_win()
+      local win = tonumber(event.match) or source
+      local saved = cursor_windows[source] or inherited_cursor_option
+      if saved and api.nvim_win_is_valid(win)
+          and api.nvim_get_option_value('virtualedit', {win = win, scope = 'local'}) == saved.applied then
+        api.nvim_set_option_value('virtualedit', saved.previous, {win = win, scope = 'local'})
+      end
+    end})
+    api.nvim_create_autocmd('WinEnter', {group = group, callback = function()
+      inherited_cursor_option = nil
+      local buf = api.nvim_get_current_buf()
+      if records[buf] then flush(buf) end
+    end})
+    api.nvim_create_autocmd('WinClosed', {group = group, callback = function(event)
+      cursor_windows[tonumber(event.match)] = nil
     end})
     api.nvim_create_autocmd({'TextChanged', 'TextChangedI'}, {group = group, callback = function(event)
       if records[event.buf] and not records[event.buf].applying then flush(event.buf) end
@@ -286,6 +348,7 @@ function M.setup(opts)
       end
     end})
     api.nvim_create_autocmd('BufWipeout', {group = group, callback = function(event)
+      restore_cursor_buffer(event.buf)
       records[event.buf], disabled[event.buf] = nil, nil
     end})
     for name, callback in pairs({HelixEnable = M.enable, HelixDisable = M.disable,
@@ -307,7 +370,10 @@ function M.teardown()
     api.nvim_del_augroup_by_name('HelixMode')
     for _, name in ipairs({'HelixEnable', 'HelixDisable', 'HelixToggle', 'HelixSelect', 'HelixSplit'}) do api.nvim_del_user_command(name) end
   end
-  records, disabled, installed, native_window = {}, {}, false, nil
+  local windows = {}
+  for win in pairs(cursor_windows) do windows[#windows + 1] = win end
+  for _, win in ipairs(windows) do restore_cursor_window(win) end
+  records, disabled, installed, native_window, inherited_cursor_option = {}, {}, false, nil, nil
   options = {auto_enable = true, history_limit = 200}
 end
 return M

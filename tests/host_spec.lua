@@ -5,6 +5,7 @@ local valid_utf8 = dofile('tests/support.lua').valid_utf8
 local buffers, current, cursor, mode, locked = {}, 1, {1, 0}, 'n', false
 local scheduled, events, listener, commands, notices, writes = {}, {}, nil, {}, {}, {}
 local passed = 0
+local virtualedit = ''
 local function split(value)
   local lines, p = {}, 1
   while true do
@@ -46,6 +47,14 @@ api.nvim_create_namespace = function() return 1 end
 api.nvim_buf_is_valid = function(buf) return buffers[buf] ~= nil end
 api.nvim_buf_is_loaded = api.nvim_buf_is_valid
 api.nvim_get_current_buf = function() return current end
+api.nvim_get_current_win = function() return 1 end
+api.nvim_win_is_valid = function(win) return win == 1 end
+api.nvim_get_option_value = function(name)
+  assert(name == 'virtualedit'); return virtualedit
+end
+api.nvim_set_option_value = function(name, value)
+  assert(name == 'virtualedit'); virtualedit = value
+end
 api.nvim_win_get_cursor = function() return {cursor[1], cursor[2]} end
 api.nvim_win_set_cursor = function(_, pos) cursor = {pos[1], pos[2]} end
 api.nvim_buf_get_lines = function(buf) return split(buffers[buf].text) end
@@ -108,6 +117,7 @@ end
 local function reset(value, col)
   helix.teardown()
   current, cursor, mode, locked = 1, {1, col or 0}, 'n', false
+  virtualedit = ''
   buffers, scheduled, notices, writes = {[1] = {text = value, marks = {}, edits = 0}}, {}, {}, {}
   vim.bo = options_table({buftype = '', modifiable = true, readonly = false}); vim.b = options_table({})
   helix.setup({auto_enable = false}); assert(helix.enable())

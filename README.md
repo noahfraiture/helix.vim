@@ -60,9 +60,9 @@ engine suite, simulated-host suite, and real Neovim integration suite. Without
 Neovim, `make test-local LUA=lua` runs the first two with Lua 5.1+ (`texlua` is
 the default when `LUA` is omitted).
 
-**Verification status:** all 97 tests (49 engine, 21 simulated-host, and 27
+**Verification status:** all 113 tests (54 engine, 21 simulated-host, and 38
 real-editor tests) pass on Neovim 0.11.4 and 0.12.6. CI also checks installation
-with `vim.pack` on stable. [CI is passing](https://github.com/noahfraiture/helix.vim/actions/runs/38800238454).
+with `vim.pack` on stable. [CI results](https://github.com/noahfraiture/helix.vim/actions).
 See [TESTING.md](TESTING.md).
 
 This is not yet a complete Helix implementation. Neovim's underlying mode remains
@@ -71,3 +71,6 @@ prefixes may delay input, and expression mappings can run before the input hook.
 [detailed usage and limitations](doc/usage.md).
 
 MIT license.
+
+A genuinely native backend needs Neovim core changes; see the
+[native-mode proposal](doc/native-mode.md).

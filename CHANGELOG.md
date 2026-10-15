@@ -16,11 +16,20 @@
 * Preserve per-buffer state, sticky disable, and safe paste-hook teardown.
 * Add find motions, line insertion, literal surround addition, regex splitting,
   internal-register arity handling, and additional selection controls.
-* Expand to 49 engine and 21 simulated-host tests with randomized invariant and
-  batching checks. Add 27 real-editor tests and a Neovim CI matrix.
+* Expand to 54 engine and 21 simulated-host tests with randomized invariant and
+  batching checks. Add 38 real-editor tests and a Neovim CI matrix.
 
-All 97 tests now pass on Neovim 0.11.4 and 0.12.6, both locally and in CI.
+All 113 tests pass locally on Neovim 0.11.4 and 0.12.6. CI runs the same suites.
 Installation through vim.pack also passes on 0.12.6. Real-editor testing fixed
 Neovim normal-mapping expansion during insertion and anchored regex offsets.
 This remains an experimental development build with the scope documented in
 README.md and doc/usage.md.
+
+## Word movement and insertion cursor fixes
+
+* Fix repeated `w`/`W` getting stuck on the first word's trailing space. Cover
+  counts, punctuation, tabs, newlines, select mode, and EOF.
+* Use Neovim's cursor for the primary insertion point and allow one cell past
+  EOL without changing the user's global cursor settings. Restore temporary
+  window options across splits, floating windows, buffer leave, and teardown.
+* Add a scoped proposal for implementing a genuine native backend in Neovim.

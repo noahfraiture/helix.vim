@@ -2,7 +2,7 @@
   "date": "2026-10-15",
   "engine_tests": {
     "status": "passed",
-    "count": 49
+    "count": 54
   },
   "simulated_host_tests": {
     "status": "passed",
@@ -10,9 +10,9 @@
   },
   "real_neovim_tests": {
     "status": "passed",
-    "count": 27
+    "count": 38
   },
-  "ci": "passed",
+  "ci": "pending_for_word_and_cursor_fixes",
   "production_ready": false,
   "tested_neovim_versions": [
     "0.11.4",
@@ -24,6 +24,6 @@
     "source": "https://github.com/noahfraiture/helix.vim",
     "revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
   },
-  "ci_run": "https://github.com/noahfraiture/helix.vim/actions/runs/38800238454",
-  "verified_code_revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
+  "previous_ci_run": "https://github.com/noahfraiture/helix.vim/actions/runs/38800238454",
+  "previous_verified_code_revision": "93c53063a7891c6197963ae13ce4173693ddcb43"
 }
